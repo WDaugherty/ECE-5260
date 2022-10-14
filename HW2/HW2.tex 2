@@ -1,0 +1,164 @@
+\documentclass[11pt]{exam}
+\usepackage{epsfig}
+
+\usepackage{hyperref}
+
+\usepackage[centertags]{amsmath}
+%\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage[all]{xy}
+\usepackage{newlfont}
+\usepackage{amsmath,amssymb,bm,mathtools}
+
+\usepackage{xcolor} %for color
+\usepackage{xmpmulti}
+%\usetheme{Air}
+%\usefonttheme{professionalfonts}
+\usepackage{thumbpdf}
+\usepackage{wasysym}
+\usepackage{upgreek}
+\usepackage{ucs}
+%\usepackage[utf8]{inputenc}
+\usepackage{pgf,pgfarrows,pgfnodes,pgfautomata,pgfheaps,pgfshade}
+\usepackage{verbatim}
+\usepackage{empheq}
+\newcommand*\widefbox[1]{\fbox{\hspace{2em}#1\hspace{2em}}}
+
+\newcommand{\Integer}{\mathbb{Z}}
+\newcommand{\Natural}{\mathbb{Z}_{\geq 0}}
+\newcommand{\Naturalstar}{\mathbb{Z}_{> 0}}
+\newcommand{\Real}{\mathbb{R}}
+\newcommand{\Complex}{\mathbb{C}}
+\newcommand{\hilbert}{\mathcal{H}}
+\newcommand{\BigHilbert}{\bm{\mathcal{H}}}
+\newcommand{\innprod}[2]{\langle{#1},{#2}\rangle}
+\newcommand{\ginnprod}[2]{\langle\!\langle{#1},{#2}\rangle\!\rangle}
+\newcommand{\norm}[1]{\|{#1}\|}
+\newcommand{\mrm}[1]{{\mathrm #1}}
+\newcommand{\gnorm}[1]{|\!|\!|{#1}|\!|\!|}
+\newcommand{\expect}{\mathbb{E}}
+
+\newcommand{\gr}{\selectlanguage{greek}}
+
+%\newcommand{\red}{\color{myred}}
+%\newcommand{\blue}{\color{myblue}}
+%\newcommand{\black}{\color{myblack}}
+
+
+%\definecolor{BrickRed}{cmyk}{0,0.89,0.94,0.28}
+%\definecolor{pink}{RGB}{255,192,203}
+
+\begin{document}
+\centerline{\Large \sc Homework 2}
+\pagestyle{empty}
+
+\hrulefill
+
+\vspace{2cm}
+
+
+{\Large \sc Name:}
+
+
+
+\vspace{2cm}
+
+
+
+{\Large \sc Student ID:}
+
+\vspace{6cm}
+
+\begin{itemize}
+  \item Reasoning and work must be shown to gain partial/full
+  credit
+  \item Please include the cover-page on your homework PDF with your name and student ID. Failure of doing so is considered bad citizenship. 
+
+ \end{itemize}
+
+\clearpage
+%{\bf Homework instructions}: You need to solve either question 1 or question 2, and you need to solve question 3. The homework total score will be the average given to two questions, either question 1 or 2, and that of question 3. You can solve the three questions if you wish; in that case of the two I will chose the one that has the highest score. 
+\begin{questions}
+\question[1--4]{\bf On walks and the adjacency matrix, and the incidence matrix}:
+\begin{parts}
+\item Consider a directed graph with no cycles or self-loops: explain why for any $k>0$ the matrix $\bm A^k$ has its diagonal equal to zero.  
+\item an undirected graph with no self-loop. Why is the diagonal of $\bm A^2$ equal to the degree sequence?
+\item Suppose you have a tree with 20 nodes. What is the dimension of its incidence matrix $\bm B$?
+\end{parts}
+
+
+
+%\question[1--4]{\bf Max-Flow}: {\it Python/NetworkX question} Please find one dataset in the attached file, i.e., node14.edgelist, which indicates a directed graph. The items in each line represent ``from” bus number, ``to” bus number and capacity limits, respectively.
+% \begin{parts}
+%\part  Plot this graph with capacity limits  in each edge (see left figure of Page 22 in Lecture 4). 
+%%\part Write the incidence matrix.
+%\part  Find  the minimum number of nodes and the minimum number of edges that must be removed to disconnect $G$ from node 1 to node 14 using  node\_connectivity and edge\_connectivity (flow\_func = maximum\_flow()) in NetworkX. 
+%\part Use Ford-Fulkerson algorithm to find Max-flow from node 1 to node 14. The results are shown by plotting a graph with maximum flows in each edge (e.g., the right figure of Page 22 in Lecture 4).
+%\end{parts}
+
+\question[1--4]{\bf Max-Flow}:{\it Python/NetworkX question}~   
+Consider a group of $N$ friends, indexed by $i \in [0, 1, \ldots, N-1]$, on a road trip. Suppose that each person paid for various group expenditures throughout the course of the trip.
+Some of the friends spent more than their share of the total (denoted by $T$), and naturally, some paid less than their share. At the end of the trip, those who are in the deficit need to settle the balance with the others, so that each of them pay exactly $T/N$. 
+\begin{parts}
+\part Choose $N = 10$ and set the total expenditure over the course of the trip to $T = 1000\cdot N$.
+\part Generate a vector of individual expenditures according to a multinomial distribution with $N$ using the following script:\\
+\texttt{amounts\_spent = numpy.random.multinomial(T, pvals = np.ones(N) / N)}\\
+Verify that the sum of all the elements in the \texttt{amounts\_spent} array is $T$.
+\part Generate a complete graph among the friends with edge capacity set to $\infty$ for all edges.
+\part Identify the nodes that (1) need to pay (i.e., $T/N - \mathrm{amounts\_spent}[i] > 0$) and (2) those that need to receive money (i.e., $T/N - \mathrm{amounts\_spent}[i] \leq 0$) to balance the books.
+\part Build the following flow network:
+\begin{enumerate}
+    \item Introduce a source node $s$ and connect it to the nodes in the former set with edge capacity equal to their individual balance (equal to $T/N - \mathrm{amounts\_spent}[i]$).
+    \item Introduce a target node $t$ and connect each node in the latter group to $t$ with edge capacity equal to their individual balance (equal to $\mathrm{amounts\_spent}[i] - T/N$). 
+\end{enumerate}
+Plot the flow network. You can use the \texttt{flow\_layout} the method in the attached script file to get a flow layout for this graph.
+\part If you run the Max-Flow algorithm, it can be shown that each flow represents the set of transactions that need to take place to balance the books. Use the max-flow algorithm to find the transactions required to settle up the balances, and verify whether the books were balanced using the flow.\\
+\textit{Useful methods}: \texttt{networkx.maximum\_flow}.\\
+\textit{Useful methods}: Use \texttt{draw\_flow} from the attached script file to draw the flow network with the flows highlighted.
+\end{parts}
+
+
+
+
+
+
+
+
+
+ 
+% \question[1--4]{\bf Python/NetworkX questions}:  
+% Upload the data regarding the example of bipartite graph  in networkx called the ``Davis Southern Women Graph''
+%G = nx.davis\_southern\_women\_graph() 
+% . Find:
+% \begin{parts}
+%\part the graph that link the women that have been in the same social event.
+%\part the graph of the social events where one or more guests where the same. 
+%\end{parts}
+
+
+
+%{\color{blue}\it Hint: 
+%The packages that you may need include networkx, matplotlib and numpy. 
+%}  
+
+%\begin{center}
+%\includegraphics[width=0.5\textwidth]{xx.png}
+%\end{center}
+\end{questions}
+
+\end{document}
+
+
+%\setlength{\unitlength}{0.14in}
+%\begin{picture}(32,15)  % picture environment with the size (dimensions)
+%  % 32 length units wide, and 15 units high.
+%\put(3,4){\framebox(6,3){$H_{B}(q)$}}
+%\put(13,4){\framebox(6,3){$N[\cdot]$}}
+%\put(23,4){\framebox(6,3){$H_{C}(q)$}}
+%\put(0,5.5){\vector(1,0){3}}\put(9,5.5){\vector(1,0){4}}
+%\put(19,5.5){\vector(1,0){4}}\put(29,5.5){\vector(1,0){3}}
+%\put(-1,6.5) {$u(k)$}\put(30,6.5) {$y(k)$} \put(9.5,6.5)
+%{$x_{B}(k)$}\put(19.5,6.5) {$x_{C}(k)$}
+%\end{picture}
+
