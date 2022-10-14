@@ -1,0 +1,155 @@
+\documentclass[11pt]{exam}
+\usepackage{epsfig}
+
+\usepackage{hyperref}
+
+\usepackage[centertags]{amsmath}
+%\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage[all]{xy}
+\usepackage{newlfont}
+\usepackage{amsmath,amssymb,bm,mathtools}
+
+\usepackage{xcolor} %for color
+\usepackage{xmpmulti}
+%\usetheme{Air}
+%\usefonttheme{professionalfonts}
+\usepackage{thumbpdf}
+\usepackage{wasysym}
+\usepackage{upgreek}
+\usepackage{ucs}
+%\usepackage[utf8]{inputenc}
+\usepackage{pgf,pgfarrows,pgfnodes,pgfautomata,pgfheaps,pgfshade}
+\usepackage{verbatim}
+\usepackage{empheq}
+\newcommand*\widefbox[1]{\fbox{\hspace{2em}#1\hspace{2em}}}
+
+\newcommand{\Integer}{\mathbb{Z}}
+\newcommand{\Natural}{\mathbb{Z}_{\geq 0}}
+\newcommand{\Naturalstar}{\mathbb{Z}_{> 0}}
+\newcommand{\Real}{\mathbb{R}}
+\newcommand{\Complex}{\mathbb{C}}
+\newcommand{\hilbert}{\mathcal{H}}
+\newcommand{\BigHilbert}{\bm{\mathcal{H}}}
+\newcommand{\innprod}[2]{\langle{#1},{#2}\rangle}
+\newcommand{\ginnprod}[2]{\langle\!\langle{#1},{#2}\rangle\!\rangle}
+\newcommand{\norm}[1]{\|{#1}\|}
+\newcommand{\mrm}[1]{{\mathrm #1}}
+\newcommand{\gnorm}[1]{|\!|\!|{#1}|\!|\!|}
+\newcommand{\expect}{\mathbb{E}}
+
+\newcommand{\gr}{\selectlanguage{greek}}
+
+%\newcommand{\red}{\color{myred}}
+%\newcommand{\blue}{\color{myblue}}
+%\newcommand{\black}{\color{myblack}}
+
+
+%\definecolor{BrickRed}{cmyk}{0,0.89,0.94,0.28}
+%\definecolor{pink}{RGB}{255,192,203}
+
+\begin{document}
+\centerline{\Large \sc Homework 6}
+\pagestyle{empty}
+
+\hrulefill
+
+\vspace{2cm}
+
+
+{\Large \sc Name:}
+
+
+
+\vspace{2cm}
+
+
+
+{\Large \sc Student ID:}
+
+\vspace{6cm}
+
+\begin{itemize}
+  \item Reasoning and work must be shown to gain partial/full
+  credit
+  \item Please include the cover-page on your homework PDF with your name and student ID. Failure of doing so is considered bad citizenship. 
+
+ \end{itemize}
+
+\clearpage
+%{\bf Homework instructions}: You need to solve either question 1 or question 2, and you need to solve question 3. The homework total score will be the average given to two questions, either question 1 or 2, and that of question 3. You can solve the three questions if you wish; in that case of the two I will chose the one that has the highest score. 
+\begin{questions}
+\question[1--4]{\bf Lecture 11 Question}:
+You want to simulate the following network dynamics for the Wikispeedia graph. This dataset contains human navigation paths on Wikipedia, collected through the human-computation game \href{https://dlab.epfl.ch/wikispeedia/play/}{Wikispeedia}. In Wikispeedia, users are asked to navigate from a given source to a given target article, by only clicking Wikipedia links. A condensed version of Wikipedia (4,589 articles) is used. 
+
+\begin{parts}
+\part[50\%] Ingest the graph as a \textbf{directed graph}. Evaluate the HITS centrality for this graph and comment on its meaning, and what differentiates this metric from other centrality measures. Identify the node with the highest hub value and the node with the highest authority value.
+\part[50\%] Since the given graph is not strongly connected, the uniform random walk will not have a stationary distribution (i.e, the probability of visiting a node asymptotically depends on the initial state probabilities $\bm{\pi}(0)$). 
+
+The algorithm used to calculate the \textbf{{Page Rank}} of webpages is a modified uniform random walk with an initial state probability for all the webpages equal to $1/N$. 
+The transition probability is as follows: 
+\begin{align*}
+  w_{ij} &= \text{Probability of going from node $i$ to node $j$}\\
+  &= \begin{cases}
+  \frac{1}{N},  & \mathcal{N}^{\mathrm{out}}_i = \emptyset\\
+  \frac{\alpha}{N} + \frac{1-\alpha}{|\mathcal{N}^{\mathrm{out}}_i|}, & \mathcal{N}^{\mathrm{out}}_i \ne \emptyset, (i \rightarrow j) \in \mathcal{E}\\
+  \frac{\alpha}{N}, & \mathcal{N}^{\mathrm{out}}_i \ne \emptyset, (i \rightarrow j) \notin \mathcal{E},
+  \end{cases}
+\end{align*}
+where $\alpha$ is some small value less than 1 (typically about $0.1$), $N$ is the number of nodes in the graph, and $\mathcal{N}_i^{\mathrm{out}}$ is the set of out-neighbors of node $i$. 
+
+Thus, the state probabilities evolve as follows:
+\begin{align*}
+  \bm{\pi}(t+1) = \bm{W}\bm{\pi}(t) = \frac{1}{N}\bm{W}^t\bm{1} 
+\end{align*}
+The webpage rank produced by PageRank is the limit of the state probabilities, $\bm{\pi}(t)$, for a large $t\rightarrow \infty$. The limiting distribution is the left eigenvector of the probability transition matrix ($\bm{W}$) that corresponds to an eigenvalue of 1, i.e., ${\bm{\pi}^\star}^T = {\bm{\pi}^\star}^T \bm{W}$.
+Calculate the PageRank for the Wikispeedia network using this fact, and compare it to the pagerank obtained by using the networkx method \texttt{nx.pagerank}, by plotting them on a scatter plot.
+% \part[25\%] Recall that:
+% \begin{itemize}
+%   \item The uniform random walk from the transition probability matrix can be written as $\bm{W} = \bm{I} - \alpha\bm{L}^{\mathrm{rw}}$, where $1-\alpha$ is the probability of remaining at the same node and $\bm{L}^{\mathrm{rw}}$ is the left (random-walk) normalized Laplacian matrix.
+%   \item The spectral clustering algorithm applies the $k$-Means clustering algorithm on the eigenvectors of the Laplacian matrix corresponding to the $k$ smallest eigenvalues.
+% \end{itemize}
+% How would you apply the spectral clustering algorithm using the eigenvectors of $\bm{W}$ instead of those of the Laplacian matrix?
+\end{parts}
+
+\question[2]{\bf Lecture 12 Questions (Randomized Gossiping)}:
+
+\begin{parts}
+\part[10\%] Generate a \textbf{connected} Random geometric graph with $N=100$ nodes\footnote{\textit{Hint: Use \texttt{G = nx.random\_geometric\_graph(N, radius, seed)}. You may use any combination of radius and random seed to produce the graph. One such combination is when the radius is set to $0.225$ and the random seed to $96845$.}}.
+\part[90\%] Each node in the graph observes an instantiation of $\mathrm{Bernoulli}(p)$, where $p$ is unknown to the nodes. The Randomized Gossiping algorithm allows the nodes to cooperatively estimate $p$. Do the following:
+\begin{itemize}
+  \item (10\% points) Select $p=0.2$, draw i.i.d samples from the distribution $\mathrm{Bernoulli}(p=0.2)$ and set that to $\bm{x}(0)$ for all $i \in [1, 2, \ldots, N]$. 
+  \item (50\% points) Now, simulate the randomized “Gossiping” protocol over this graph for $T = 10,000$ steps to estimate $p$. 
+  The specific instance of randomized “Gossiping”  is the one with random pairwise exchanges explained in Lecture 12, page 12. Basically, you pick at time $t$ a random edge $(i_t,j_t)$ and you average the two state variable as follows:
+\[
+[\bm x(t+1)]_v=
+\begin{cases}
+\frac{x_{i_t}(t)+x_{j_t}(t)}{2} & i_t=v~\text{or}~j_t=v\\
+x_v(t) &\mbox{else}
+\end{cases}
+\]
+\item (10\% points) Show the evolution of the states of all nodes over time (similar to the plots shown in Lecture 12, slide 16, at the bottom).
+\item (20\% points) Explain why this method is able to estimate $p$.
+\end{itemize}
+
+% \part[5\%] Average the mixing matrices $\bm W(t)$ over $T=10,000$ exchanges of the randomized gossiping algorithm with pairwise exchanges. The average $\hat{\overline{\bm W}}=\frac{1}{T} \sum_{t=1}^{T} \bm W(t)$ is an empirical estimate of $\overline{\bm W}=\mathbb{E}[\bm W(t)]$. Use this empirical estimate to compute $\lambda_2(\hat{\overline{\bm W}})$
+\part[5\% bonus] Calculate analytically $\overline{\bm W}=\mathbb{E}[\bm W(t)]$ and $\lambda_2(\overline{\bm{W}})$ based on the description of the statistics of the exchange.
+\end{parts}
+\end{questions}
+
+\end{document}
+
+
+%\setlength{\unitlength}{0.14in}
+%\begin{picture}(32,15)  % picture environment with the size (dimensions)
+%  % 32 length units wide, and 15 units high.
+%\put(3,4){\framebox(6,3){$H_{B}(q)$}}
+%\put(13,4){\framebox(6,3){$N[\cdot]$}}
+%\put(23,4){\framebox(6,3){$H_{C}(q)$}}
+%\put(0,5.5){\vector(1,0){3}}\put(9,5.5){\vector(1,0){4}}
+%\put(19,5.5){\vector(1,0){4}}\put(29,5.5){\vector(1,0){3}}
+%\put(-1,6.5) {$u(k)$}\put(30,6.5) {$y(k)$} \put(9.5,6.5)
+%{$x_{B}(k)$}\put(19.5,6.5) {$x_{C}(k)$}
+%\end{picture}
+
