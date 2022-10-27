@@ -1,0 +1,170 @@
+\documentclass[11pt]{exam}
+\usepackage{epsfig}
+
+\usepackage{hyperref}
+
+\usepackage[centertags]{amsmath}
+%\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage[all]{xy}
+\usepackage{newlfont}
+\usepackage{amsmath,amssymb,bm,mathtools}
+\usepackage{enumitem}
+\usepackage{xcolor} %for color
+\usepackage{xmpmulti}
+%\usetheme{Air}
+%\usefonttheme{professionalfonts}
+\usepackage{thumbpdf}
+\usepackage{wasysym}
+\usepackage{upgreek}
+\usepackage{empheq}
+\usepackage{pythonhighlight}
+\newcommand*\widefbox[1]{\fbox{\hspace{2em}#1\hspace{2em}}}
+
+
+\begin{document}
+\centerline{\Large \sc Homework 8}
+\pagestyle{empty}
+
+\hrulefill
+
+\vspace{2cm}
+
+
+{\Large \sc Name:}
+
+
+
+\vspace{2cm}
+
+
+
+{\Large \sc Student ID:}
+
+\vspace{6cm}
+
+\begin{itemize}
+  \item Reasoning and work must be shown to gain partial/full
+  credit
+  \item Please include the cover-page on your homework PDF with your name and student ID. Failure of doing so is considered bad citizenship. 
+
+ \end{itemize}
+
+\clearpage
+%{\bf Homework instructions}: You need to solve either question 1 or question 2, and you need to solve question 3. The homework total score will be the average given to two questions, either question 1 or 2, and that of question 3. You can solve the three questions if you wish; in that case of the two I will chose the one that has the highest score. 
+\begin{questions}
+\question[1--4]{\bf Lecture 13 Question}:
+You want to simulate the following network dynamics:
+You want to simulate the SIR model over the network hospital\_edge.txt with different values of $\beta = (0.2,0.5,0.9)$ and $\gamma=0.1$, where $d_i$ is the degree of node $i$.
+\begin{parts}
+\part[50\%]  Use the finite difference method to calculate the evolution of the probability of infection where  $dt$ is the unit of time (for simplicity choose $dt=1$): 
+\begin{equation}
+\dot x_i(t)=\frac{
+x_i(t+1)-x_i(t)}{dt}=\sum_{j\in {\cal N}_i} \frac{\beta}{\max_k d_k} (1-x_i(t))x_j(t) -\gamma x_i(t)
+\label{eq1}
+\end{equation}
+setting the initial state $\bm x(0)=\bm e_i$ where $\bm e_i$ is a coordinate vector for node $i$.  Show the evolution of all nodes the states over time (similar to the plots shown in Lecture 12, slide 16, at the bottom)
+% The solution should be approximately the same. 
+\part[50\%]  Consider now the SI model, which essentially is the same as the SIR but with $\gamma=0$ (nobody is removed). We want to model the actual random infections rather thant evaluating their probability. We can simulate the state $y_i(t)\in \{0,1\}$ of each individual as follows. 
+\begin{itemize}
+\item We start with one infected node $y_1(0)=1$ and all the rest $y_i(0)=0$ $i\in {\cal V}/ i$
+\item At each $t$ each node $i$ selects uniformly at random a neighbor $j\in {\cal N}_i$ with probability $\beta/|{\cal N_i}|$ or, does not meet anyone with probability $(1-\beta)$.
+\item 
+Let $m_{ij}(t)$ be the {\it meeting indicator function} that is $1$ if node $i$ meets node $j$ at time $t$ and zero else.
+ Then:
+\begin{equation}
+y_i(t+1)=y_i(t)+\sum_{j\in {\cal N}_i} m_{ij}(t)
+(1-y_i(t)) y_j(t),~~~~i\in{\cal V}
+\end{equation}
+\end{itemize}
+Simulate several realizations of $y_i(t)$ with $\beta=0.2$ and show that on average across $1000$ experiments you obtain the same result as  $x_i(t)$ for the SI model (the same as equation \eqref{eq1} with $\beta=0.2$ and $\gamma=0$). 
+
+\end{parts}
+
+\question[2]{\textbf{Hengselmann-Krause bounded confidence model}}:
+\begin{parts}
+\part[100\%] For a given network $\mathcal{G}(\mathcal{V},\mathcal{E})$, the Hengselmann-Krause bounded confidence interval update rule is given by:
+\begin{align*}
+    x_i(t+1) = \frac{\sum_{j\in\mathcal{V}} W_{ij} \cdot u_{\tau}(d_{ij}(x_i(t),x_j(t))) \cdot x_j(t)}{\sum_{j\in\mathcal{V}} W_{ij} \cdot u(\tau - d_{ij}(x_i(t),x_j(t)))}, \qquad \forall i \in \mathcal{V},
+\end{align*}
+where 
+\begin{itemize}
+  \item $x_i(t)$ is the state of node $i$ at time $t$,
+  \item $d_{ij}(x_i,x_j)=|x_i-x_j|$ is the distance between two states, 
+  \item $u_{\tau}(\cdot)$ is an indicator function that decides if two nodes are in each others' confidence, and it is given by:
+  \[
+    u_{\tau}\left(y\right) = \begin{cases}
+    1, & y \leq \tau\\
+    0, & \text{else}
+\end{cases},
+\]
+  \item $\bm W=(1-\alpha)\bm I+\alpha \bm L^{\text{rw}}$ is the mixing matrix with $\alpha=\frac{0.5}{\max_i(d_i)}$, where $\max_i(d_i)$ is the maximum degree.
+\end{itemize}
+Draw the initial opinion of agents from i.i.d uniform distribution between 0 and 1 and simulate the Hengselmann-Krause bounded confidence model on the network given in \texttt{rt-retweet.mtx} by considering two thresholds $\tau=0.1$ and $\tau=0.5$. Plot the evolution of the opinion of the agents. 
+\end{parts}
+
+\question[3]{\bf Lecture 15 problem}:
+\begin{parts}
+\part[50\%] Simulate electric grid power flows for IEEE case 30. This test ciruit has $N = 30$ buses indexed from $0$ to $29$. Please find its admission matrix, $\bm{Y} \in \mathbb{C}^{N \times N}$, susceptance matrix, $\bm{B} \in \mathbb{R}^{N \times N}$, and voltage phasors, $\bm{v} \in \mathbb{C}^{N}$, in the attached file (``ieee30.mat")\footnote{Refer to Slides 34 for the definition.}. 
+\begin{enumerate}[label=\roman*.]
+\item (25\%) Given the voltage phasors, $\bm{v}$, calculate the apparent power generations of all the buses, $\bm{s} \in \mathbb{C}^{N}$.
+\item (25\%) Consider the DC Power Flow equations (in Slide 37). 
+\begin{itemize}
+  \item Calculate the active (real) power injections, $\bm{p} \in \mathbb{R}^{N}$, from the apparent powers from part i. 
+  \item Use the active power injections to compute all the  voltage angles, $\bm{\theta}\in \mathbb{R}^{N}$, of all the buses. \\
+  While performing load flow studies, one needs to use a slack bus to balance the active and reactive powers in the system. Thus, assume bus $0$ as the slack bus and fix its voltage phase angle at $0~\mathrm{rad}$. Since the slack bus is used to balance the system, its active power generation is a variable that needs to be calulated as well. Therefore solve the following linear system:
+  \[
+    \bm{p} = \bm{B} \bm{\theta},
+  \]
+  where $p_0$ and $\theta_i$, for all $i \in \{1, \ldots, N-1\}$, are the  unknowns.
+\end{itemize}
+
+\end{enumerate}
+
+\part[50\%] \textbf{Optimal Power Flow}: Import the case 30 bus system using the following code excerpt:
+\begin{python}
+!pip install pypower
+from pypower.case30 import case30
+
+ppc = case30()
+# \mathcal{N}
+buses = ppc["bus"][:,0] - 1 # -1 because python is 0-indexed
+# \mathcal{G}
+generators = ppc["gen"][:,0] - 1 # -1 because python is 0-indexed
+non_generators = list(set(buses) - set(generators))
+demands = ppc["bus"][:, [3]]
+g_low = ppc["gen"][:, [9]] # returns only the limits for the generators indexed by the elements in generators.
+g_high = ppc["gen"][:, [8]] # returns only the limits for the generators indexed by the elements in generators.
+\end{python}
+where $\mathcal{N}$ is the set of all buses with cardinality $N$ and $\mathcal{G}$ is the set of all generators with cardinality $G$.
+\begin{enumerate}[label=\roman*.]
+\item (25\%) Compute the AC Optimal Power Flow using \texttt{pypower.api.runopf(ppc)} and report the results.
+\item (25\%) Optimal Power Flow is in general a nonconvex optimization problem. But there are a lot of relaxation methods proposed in literature~\cite{low2014convex}. One of the easiest version is the DC power flow relaxations, where the the operator tries to minimize the total power generated such that the net power injected by a bus is equal to the difference of the power generated and the demand at that bus while also satisfying the generation capacity constraints. This may be written as a constrained optimization problem as follows:
+\begin{align}
+	\min_{\bm{g},\bm{\vartheta}} & ~~f_{cost} = \sum_{i\in \mathcal{G}}   g_{i}\\
+	& \bm{g}  - \bm{d} = \bm{B} \bm{\vartheta}\\
+	& \underline{\bm{g}} \le \bm{g} \le \overline{\bm{g}}\\
+  & g_i = 0, \quad \forall i \in \mathcal{N} \setminus \mathcal{G},
+\end{align}
+where
+\begin{itemize}
+  \item $\bm{g} = [{g}_{0}, \cdots, {g}_{N-1}]^\top$ is the vector of active power generations,
+  \item $\bm{d} = [{d}_{0}, \cdots, {d}_{N-1}]^\top$ is the vector of demands,
+  \item $\bm{B}$ is the susceptance matrix, and
+  \item $\bm{\vartheta} = [{\vartheta}_{0}, \cdots, {\vartheta}_{N-1}]^\top$ is the vector of voltage phase angles.
+\end{itemize}
+
+Please utilize the convex programming solver cvxpy\footnote{\url{https://www.cvxpy.org/examples/basic/linear_program.html}} to solve for the optimal $\bm{g}$ and $\bm{\vartheta}$.
+\end{enumerate}
+
+\end{parts}
+\end{questions}
+
+\bibliographystyle{plain}
+\bibliography{ref}
+
+\end{document}
+
+
+
