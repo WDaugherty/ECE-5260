@@ -59,14 +59,15 @@ You want to simulate the following network dynamics:
 You want to simulate the SIR model over the network hospital\_edge.txt with different values of $\beta = (0.2,0.5,0.9)$ and $\gamma=0.1$, where $d_i$ is the degree of node $i$.
 \begin{parts}
 \part[50\%]  Use the finite difference method to calculate the evolution of the probability of infection where  $dt$ is the unit of time (for simplicity choose $dt=1$): 
-\begin{equation}
-\dot x_i(t)=\frac{
-x_i(t+1)-x_i(t)}{dt}=\sum_{j\in {\cal N}_i} \frac{\beta}{\max_k d_k} (1-x_i(t))x_j(t) -\gamma x_i(t)
+\begin{align}
+\dot x_i(t)&=\frac{
+x_i(t+1)-x_i(t)}{dt}=\sum_{j\in {\cal N}_i} \frac{\beta}{d_i} (1-x_i(t))x_j(t) -\gamma x_i(t)\nonumber\\
+&=\frac{\beta}{d_i} (1-x_i(t))\sum_{j\in {\cal N}_i} x_j(t) -\gamma x_i(t)
 \label{eq1}
-\end{equation}
+\end{align}
 setting the initial state $\bm x(0)=\bm e_i$ where $\bm e_i$ is a coordinate vector for node $i$.  Show the evolution of all nodes the states over time (similar to the plots shown in Lecture 12, slide 16, at the bottom)
 % The solution should be approximately the same. 
-\part[50\%]  Consider now the SI model, which essentially is the same as the SIR but with $\gamma=0$ (nobody is removed). We want to model the actual random infections rather thant evaluating their probability. We can simulate the state $y_i(t)\in \{0,1\}$ of each individual as follows. 
+\part[50\%]  Consider now the SI model, which essentially is the same as the SIR but with $\gamma=0$ (nobody is removed). We want to model the actual random infections rather than evaluating their probability. We can simulate the state $y_i(t)\in \{0,1\}$ of each individual as follows. 
 \begin{itemize}
 \item We start with one infected node $y_1(0)=1$ and all the rest $y_i(0)=0$ $i\in {\cal V}/ i$
 \item At each $t$ each node $i$ selects uniformly at random a neighbor $j\in {\cal N}_i$ with probability $\beta/|{\cal N_i}|$ or, does not meet anyone with probability $(1-\beta)$.
@@ -106,14 +107,14 @@ Draw the initial opinion of agents from i.i.d uniform distribution between 0 and
 
 \question[3]{\bf Lecture 15 problem}:
 \begin{parts}
-\part[50\%] Simulate electric grid power flows for IEEE case 30. This test ciruit has $N = 30$ buses indexed from $0$ to $29$. Please find its admission matrix, $\bm{Y} \in \mathbb{C}^{N \times N}$, susceptance matrix, $\bm{B} \in \mathbb{R}^{N \times N}$, and voltage phasors, $\bm{v} \in \mathbb{C}^{N}$, in the attached file (``ieee30.mat")\footnote{Refer to Slides 34 for the definition.}. 
+\part[50\%] Simulate electric grid power flows for IEEE case 30. This test circuit has $N = 30$ buses indexed from $0$ to $29$. Please find its admission matrix, $\bm{Y} \in \mathbb{C}^{N \times N}$, susceptance matrix, $\bm{B} \in \mathbb{R}^{N \times N}$, and voltage phasors, $\bm{v} \in \mathbb{C}^{N}$, in the attached file (``ieee30.mat")\footnote{Refer to Slides 34 for the definition.}. 
 \begin{enumerate}[label=\roman*.]
 \item (25\%) Given the voltage phasors, $\bm{v}$, calculate the apparent power generations of all the buses, $\bm{s} \in \mathbb{C}^{N}$.
 \item (25\%) Consider the DC Power Flow equations (in Slide 37). 
 \begin{itemize}
   \item Calculate the active (real) power injections, $\bm{p} \in \mathbb{R}^{N}$, from the apparent powers from part i. 
   \item Use the active power injections to compute all the  voltage angles, $\bm{\theta}\in \mathbb{R}^{N}$, of all the buses. \\
-  While performing load flow studies, one needs to use a slack bus to balance the active and reactive powers in the system. Thus, assume bus $0$ as the slack bus and fix its voltage phase angle at $0~\mathrm{rad}$. Since the slack bus is used to balance the system, its active power generation is a variable that needs to be calulated as well. Therefore solve the following linear system:
+  While performing load flow studies, one needs to use a slack bus to balance the active and reactive powers in the system. Thus, assume bus $0$ as the slack bus and fix its voltage phase angle at $0~\mathrm{rad}$. Since the slack bus is used to balance the system, its active power generation is a variable that needs to be calculated as well. Therefore solve the following linear system:
   \[
     \bm{p} = \bm{B} \bm{\theta},
   \]
@@ -140,7 +141,7 @@ g_high = ppc["gen"][:, [8]] # returns only the limits for the generators indexed
 where $\mathcal{N}$ is the set of all buses with cardinality $N$ and $\mathcal{G}$ is the set of all generators with cardinality $G$.
 \begin{enumerate}[label=\roman*.]
 \item (25\%) Compute the AC Optimal Power Flow using \texttt{pypower.api.runopf(ppc)} and report the results.
-\item (25\%) Optimal Power Flow is in general a nonconvex optimization problem. But there are a lot of relaxation methods proposed in literature~\cite{low2014convex}. One of the easiest version is the DC power flow relaxations, where the the operator tries to minimize the total power generated such that the net power injected by a bus is equal to the difference of the power generated and the demand at that bus while also satisfying the generation capacity constraints. This may be written as a constrained optimization problem as follows:
+\item (25\%) Optimal Power Flow is in general a non-convex optimization problem. But there are a lot of relaxation methods proposed in literature~\cite{low2014convex}. One of the easiest version is the DC power flow relaxations, where the the operator tries to minimize the total power generated such that the net power injected by a bus is equal to the difference of the power generated and the demand at that bus while also satisfying the generation capacity constraints. This may be written as a constrained optimization problem as follows:
 \begin{align}
 	\min_{\bm{g},\bm{\vartheta}} & ~~f_{cost} = \sum_{i\in \mathcal{G}}   g_{i}\\
 	& \bm{g}  - \bm{d} = \bm{B} \bm{\vartheta}\\
