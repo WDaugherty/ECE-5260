@@ -1,5 +1,8 @@
 # ECE-5260-Graph-Based-Data-Science-for-Networked-Systems
-A repo for ECE 5260 (Graph-Based Data Science for Networked Systems) Assignmnents.
+All assignments and materials used in Cornell Tech's ECE 5260 (Graph-Based Data Science for Networked Systems).
 
-
-This repository 
+Overview of concepts:
+| Left-aligned | Center-aligned |
+| :---:        |     :---:      |
+| Assingment 1   | git status     |
+| Assingment 2   | git diff       |
